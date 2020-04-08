@@ -75,7 +75,7 @@ def generic_bfs_edges(G, source, neighbors=None, depth_limit=None):
             queue.popleft()
 
 
-def bfs_edges(G, source, reverse=False, depth_limit=None):
+def bfs_edges(G, source, reverse=False, depth_limit=None, verbose = False):
     """Iterate over edges in a breadth-first-search starting at source.
 
     Parameters
@@ -146,7 +146,12 @@ def bfs_edges(G, source, reverse=False, depth_limit=None):
         successors = G.predecessors
     else:
         successors = G.neighbors
-    yield from generic_bfs_edges(G, source, successors, depth_limit)
+    nodes = generic_bfs_edges(G, source, successors, depth_limit)
+    for node in nodes:
+        if verbose: 
+            print("Extracting edge: ", node)
+        yield node
+
 
 
 def bfs_tree(G, source, reverse=False, depth_limit=None):
