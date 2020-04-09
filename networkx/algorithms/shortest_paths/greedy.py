@@ -10,26 +10,31 @@ def greedy_path(G, source, target, heuristic = None, weight = 'weight'):
     queue = [(0, next(instant), source, None) ]
     visited = {(source, 0): None}
     while queue:
-        cost, _, element, parent = heappop(queue)
+        _, _, element, parent = heappop(queue)
 
         if element == target:
             #new function, get_path
             path = [element]
-            parent, cost_from_source = visited[element, cost]
-            while cost_from_source != 0:
+            while parent != None:
                 path.append(parent)
-                parent, cost_from_source = visited[parent, cost_from_source]
-            path.append(parent)
+                parent = visited[parent]
             path.reverse()
             return path
+        
+        if element in visited:
+            continue
+        else: 
+            visited[element] = parent
 
-        neighbourhood = G[element]
+        neighbourhood = []
+        if element in G:
+            neighbourhood = G[element]
 
         for neighbour in neighbourhood:
-            cost_to_neighbour = cost + G[element][neighbour][weight]
-            visited[neighbour, cost_to_neighbour] = element, cost
+            cost_to_neighbour = heuristic(neighbour)
             neighbour_record = ( cost_to_neighbour, next(instant), neighbour, element)
             heappush(queue, neighbour_record)
-    
+
+        
     raise nx.NetworkXNoPath(f"Node {target} is not connected with {source} ")
 
