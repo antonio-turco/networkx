@@ -5,14 +5,8 @@ import networkx as nx
 __all__ = ["greedy_path"]
 
 def greedy_path(G, source, target, heuristic = None, weight = 'weight'):
-    if heuristic != None:
-        h = lambda node: heuristic(node, target)
-    else:
-        h = lambda node: 1        
-
-    instant = count()
-    queue = [(0, next(instant), source, None) ]
-    visited = {(source, 0): None}
+    instant, queue, visited = initiliaze_structures(source)
+    h = make_target_heuristic(target, heuristic)
     while queue:
         _, _, element, parent = heappop(queue)
 
@@ -26,6 +20,19 @@ def greedy_path(G, source, target, heuristic = None, weight = 'weight'):
 
         
     raise nx.NetworkXNoPath(f"Node {target} is not connected with {source} ")
+
+def initiliaze_structures(source):
+    instant = count()
+    queue = [(0, next(instant), source, None) ]
+    visited = {(source, 0): None}
+    return instant, queue, visited
+
+def make_target_heuristic(target, heuristic = None):
+    if heuristic != None:
+        h = lambda node: heuristic(node, target)
+    else:
+        h = lambda node: 1 
+    return h
 
 def get_path( element, parent, visited ):
     path = [element]
